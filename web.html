@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Avatar</title><style>body{margin:0;overflow:hidden}</style></head><body>
+<script src="https://cdn.jsdelivr.net/npm/three@0.165/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.165/examples/jsm/loaders/GLTFLoader.js"></script>
+<script>
+let scene,camera,renderer,mixer,clock=new THREE.Clock();
+init();animate();
+function init(){
+  scene=new THREE.Scene();scene.background=new THREE.Color(0x202225);
+  camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,100);
+  camera.position.set(0,1.5,3);
+  const light=new THREE.DirectionalLight(0xffffff,1.2);light.position.set(3,5,3);scene.add(light);
+  renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(window.innerWidth,window.innerHeight);document.body.appendChild(renderer.domElement);
+  new THREE.GLTFLoader().load(
+   "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/RobotExpressive/glTF-Binary/RobotExpressive.glb",
+   gltf=>{
+     scene.add(gltf.scene);
+     mixer=new THREE.AnimationMixer(gltf.scene);
+     mixer.clipAction(THREE.AnimationClip.findByName(gltf.animations,"Idle")).play();
+   });
+  window.addEventListener("resize",()=>{
+    camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+  });
+}
+function animate(){requestAnimationFrame(animate);if(mixer)mixer.update(clock.getDelta());renderer.render(scene,camera);}
+window.avatarSpeak=text=>{
+  if(mixer){mixer.timeScale=2;setTimeout(()=>mixer.timeScale=1,1200);}
+};
+</script></body></html>
