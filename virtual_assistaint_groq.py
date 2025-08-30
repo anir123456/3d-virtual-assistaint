@@ -7,12 +7,7 @@ from vpython import sphere, vector, color, rate, scene
 import speech_recognition as sr
 import pyttsx3
 
-# -------------------------------------------------------------
-# 🔑 Configuration for Groq LLM (https://console.groq.com)
-# -------------------------------------------------------------
-# • Export your key:     export GROQ_API_KEY="sk‑..."
-# • Optional model env: export GROQ_MODEL="llama3-70b-8192"
-# -------------------------------------------------------------
+
 try:
     import groq
 except ImportError:
@@ -26,9 +21,9 @@ MODEL_ID = os.getenv("GROQ_MODEL", "llama3-70b-8192")
 groq_client = groq.Groq(api_key=GROQ_API_KEY)
 ASSISTANT_NAME = os.getenv("ASSISTANT_NAME", "Neo")
 
-# ---------------------------------------------------------------------------
+
 # Text‑to‑Speech
-# ---------------------------------------------------------------------------
+
 engine = pyttsx3.init()
 engine.setProperty("rate", 150)
 
@@ -37,9 +32,9 @@ def speak(text: str):
     engine.say(text)
     engine.runAndWait()
 
-# ---------------------------------------------------------------------------
+
 # Groq Chat Completions helper
-# ---------------------------------------------------------------------------
+
 
 def ask_groq(prompt: str) -> str:
     """Send a prompt to Groq and return the assistant's reply."""
@@ -53,9 +48,9 @@ def ask_groq(prompt: str) -> str:
     )
     return response.choices[0].message.content.strip()
 
-# ---------------------------------------------------------------------------
+
 # 3‑D Visual Assistant (VPython)
-# ---------------------------------------------------------------------------
+
 scene.title = "3D Virtual Assistant"
 scene.background = color.black
 assistant_ball = sphere(pos=vector(0, 0, 0), radius=1, color=color.cyan, emissive=True)
@@ -71,9 +66,9 @@ def animate():
 animation_thread = threading.Thread(target=animate, daemon=True)
 animation_thread.start()
 
-# ---------------------------------------------------------------------------
+
 # Voice Loop with Groq fallback
-# ---------------------------------------------------------------------------
+
 
 def listen_and_respond():
     recognizer = sr.Recognizer()
@@ -115,3 +110,4 @@ def listen_and_respond():
 
 if __name__ == "__main__":
     listen_and_respond()
+
